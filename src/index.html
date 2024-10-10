@@ -4,18 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./output.css">
+    <script src="./script.js" defer></script>
     <title>Weather it'll rain</title>
 </head>
 <body class="bg-zinc-700 flex items-center justify-center h-screen">
     <div>
         <!-- logo here in the left top corner of the page, in a triangle shape slightly like a bookmark -->
     </div>
-    <div class="bg-blue-400 flex h-[70vh]">
-        <div class="w-[30vw]">
-            section 1
+    <div class="bg-blue-400 flex h-[80vh]">
+        <div class="w-[30vw] flex-col">
+            <div class="flex justify-center mx-auto my-4 p-1 px-2">
+                <!-- Input with Search Icon inside -->
+                <div class="relative w-full max-w-md">
+                    <input type="text" id="location_input" placeholder="Search Location" 
+                           class="text-xl p-2 pl-4 pr-10 rounded-full w-full">
+                    <img src="../assets/search-svgrepo-com.svg" id="location_search"
+                         class="absolute right-3 top-1/2 transform -translate-y-1/2 h-6 w-6">
+                </div>
+                
+                <!-- Current Location Button outside -->
+                <div id="current_location_btn" class="bg-white rounded-full mx-2 flex items-center justify-center">
+                    <img src="../assets/location-currrent-svgrepo-com.svg" title="Use Current Location" height="37" width="37">
+                </div>
+            </div>
+            <div class="flex justify-between">
+                <div class="flex"><img src="../assets/location-pin-svgrepo-com.svg" height="30" width="30">Paris</div>
+                <div>Thu, 10 Oct, 2024</div>
+            </div>
+            <div class="flex p-10 justify-between">
+                <img src="../assets/main-weather-placeholder.png" height="150" width="150">
+                <div>
+                    <div>17°C</div>
+                    <div>Clear</div>
+                </div>
+            </div>
+            <div>
+                <!-- add hourly forecast here for the day -->
+            </div>
         </div>
+        <!-- add a line between the major sections to show seperation here -->
         <div class="w-[30vw]">
-            section 2
+            
         </div>
     </div>
 </body>
