@@ -13,19 +13,17 @@ locationSearch.addEventListener("click",function(){
 
 
 
-async function fetchWeather(city){
-    try{
-        const response = await fetch(`http://api.weatherapi.com/v1/current.json?key=e411b3ac9894468fa69120046241010&q=${city}&aqi=yes`);
-        if(!response.ok){
-            throw new Error("Weather Data Not Found");
-        }
-        const data = await response.json();
-        console.log(data);
-        // displayWeather(data);
-    }catch(error){
-        console.error(error);
-        alert(error.message || 'Error fetching weather data. Please try again.');
-    }
+function fetchWeather(city){
+    const currentData = fetch(`http://api.weatherapi.com/v1/current.json?key=e411b3ac9894468fa69120046241010&q=${city}&aqi=yes`).then(response => response.json());
+    const forecastData = fetch(`http://api.weatherapi.com/v1/forecast.json?key=e411b3ac9894468fa69120046241010&q=${city}&days=3&aqi=yes`).then(response => response.json());
+
+    Promise.all([currentData, forecastData])
+        .then(([currentData, forecastData])=>{
+            displayWeather(currentData, forecastData);
+        }).catch(error => {
+            console.error('Error fetching weather data:', error);
+            //implement function showError(); that displays error in a good ui under the search bar 
+        });
 }
 
 function validateInput(locationVal){
@@ -37,3 +35,7 @@ function validateInput(locationVal){
     return true;
 }
 
+function displayWeather(currentData, forecastData){
+    console.log(currentData);
+
+}
