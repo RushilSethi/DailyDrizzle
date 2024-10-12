@@ -84,12 +84,55 @@ function displayWeather(city, currentData, forecastData) {
         const hourConditionSVG = getWeatherSVGPath(conditionCode);
         hourItem.innerHTML = `
             <div>${time}</div>
-            <img src="${hourConditionSVG}" class="h-20 w-20" /> <!-- Use your desired dimensions -->
+            <img src="${hourConditionSVG}" class="h-20 w-20" />
             <div>${tempC} °C</div>
         `;
 
         hourlyContainer.appendChild(hourItem);
     });
+
+
+    const humidityWindspeed = document.getElementById("humidity_windspeed");
+    humidityWindspeed.innerHTML = `<div class="flex">
+                    <img src="../assets/humidity-svgrepo-com.svg" class="h-14 w-14 mr-2">
+                    <div class="text-white">
+                        <div>Humidity(in %)</div>
+                        <div>${currentData.current.humidity}</div>
+                    </div>
+                </div>
+                <div class="flex">
+                    <img src="../assets/wind-svgrepo-com.svg" class="h-14 w-14 mr-2">
+                    <div class="text-white">
+                        <div>Wind Speed(in km/hr)</div>
+                        <div>${currentData.current.wind_kph}</div>
+                    </div>
+                </div>`;  
+    
+    updateAQIDisplay(currentData.current.air_quality);
+
+    const forecastContainer = document.getElementById("forecast_container");
+    forecastContainer.innerHTML = '';
+
+    for (let i = 0; i < 3; i++) {
+        const forecastDay = forecastData.forecast.forecastday[i];
+        const date = formatDate(forecastDay.date);
+        const dayCondition = forecastDay.day.condition;
+        const TempC = forecastDay.day.avgtemp_c;
+
+        // Create a tile for each day's forecast
+        const dayTile = document.createElement("div");
+        dayTile.classList.add("flex", "flex-col", "items-center", "bg-white", "rounded-lg", "shadow-md", "p-2", "m-2", "w-full");
+
+        // Add content to the tile
+        dayTile.innerHTML = `
+            <div class="text-lg font-semibold text-center">${date}</div>
+            <img src="${getWeatherSVGPath(dayCondition.code)}" class="h-14 w-14 mx-auto" alt="${dayCondition.text} image" />
+            <div class="text-lg mt-2">${dayCondition.text}</div>
+            <div class="text-lg">${TempC} °C</div>
+        `;
+
+        forecastContainer.appendChild(dayTile);
+    }
 }
 
 // HELPER FUNCTIONS
@@ -234,3 +277,119 @@ function getPersonalizedWeatherMessage(conditionCode, tempC) {
     
     return message;
 }
+
+//function to calculate AQI from the air quality data
+function calculateAQI(data) {
+    const pollutants = [
+      { name: 'co', breakpoints: [0, 9, 12, 15.5, 34, 54, 85, 126, 200] },
+      { name: 'no2', breakpoints: [0, 3, 6, 9, 12, 15, 18, 21, 36] },
+      { name: 'o3', breakpoints: [0, 53, 70, 101, 126, 157, 188, 236, 375] },
+      { name: 'so2', breakpoints: [0, 35, 75, 115, 155, 185, 215, 265, 425] },
+      { name: 'pm2_5', breakpoints: [0, 12.1, 35.5, 55.4, 154.9, 254.1, 350.5, 446.9, 604.3] },
+      { name: 'pm10', breakpoints: [0, 54.9, 125.5, 154.9, 234.1, 354.5, 424.9, 504.3, 604.3] }
+    ];
+  
+    let maxAQI = 0;
+  
+    for (const pollutant of pollutants) {
+      const concentration = data[pollutant.name];
+      let aqi = 0;
+  
+      for (let i = 0; i < pollutant.breakpoints.length; i++) {
+        if (concentration <= pollutant.breakpoints[i]) {
+          aqi = Math.round(i * 50);
+          break;
+        }
+      }
+  
+      maxAQI = Math.max(maxAQI, aqi);
+    }
+  
+    return maxAQI;
+  }
+
+
+//function to update and display AQI
+function updateAQIDisplay(data) {
+    const aqi = calculateAQI(data);
+
+    let status = '';
+    let color = '';
+    let emoji = '';
+    let message = ''; 
+    let aqiBarHeightClass = '';
+
+    if (aqi <= 50) {
+        status = 'Good';
+        color = 'bg-green-500';
+        emoji = '🌱';
+        message = 'Enjoy the fresh air!';
+        aqiBarHeightClass = 'h-1/6'; // Assign 1/6th of the height
+    } else if (aqi <= 100) {
+        status = 'Moderate';
+        color = 'bg-yellow-500';
+        emoji = '🙂';
+        message = 'Air quality is acceptable.';
+        aqiBarHeightClass = 'h-1/4'; // Assign 1/4th of the height
+    } else if (aqi <= 150) {
+        status = 'Unhealthy for Sensitive';
+        color = 'bg-orange-500';
+        emoji = '😷';
+        message = 'Sensitive groups should limit outdoor activities.';
+        aqiBarHeightClass = 'h-1/3'; // Assign 1/3rd of the height
+    } else if (aqi <= 200) {
+        status = 'Unhealthy';
+        color = 'bg-red-500';
+        emoji = '😨';
+        message = 'Everyone should reduce prolonged outdoor exertion.';
+        aqiBarHeightClass = 'h-1/2'; // Assign half of the height
+    } else if (aqi <= 300) {
+        status = 'Very Unhealthy';
+        color = 'bg-purple-500';
+        emoji = '😵';
+        message = 'Health alert: Avoid outdoor activities!';
+        aqiBarHeightClass = 'h-2/3'; // Assign 2/3rd of the height
+    } else {
+        status = 'Hazardous';
+        color = 'bg-black';
+        emoji = '⚠️';
+        message = 'Emergency conditions: Stay indoors!';
+        aqiBarHeightClass = 'h-full'; // Assign full height
+    }
+
+    // Dynamically updating the entire AQI container
+    const aqiContainer = document.getElementById("aqi_container");
+    aqiContainer.innerHTML = `
+      <div class="container mx-auto p-4 text-white">
+        <div class="flex justify-center items-center">
+          <!-- AQI Value and Message on the Left -->
+          <div class="flex flex-col items-center ml-4 text-sm">
+            <h2 class="text-2xl font-bold mb-2">Air Quality Index</h2> <!-- Increased font size -->
+            <span id="aqi-value" class="text-xl font-bold">${aqi}</span> <!-- Increased font size -->
+            <span id="aqi-message" class="block text-lg">${status}: ${message} ${emoji}</span> <!-- Increased font size -->
+          </div>
+
+          <!-- Vertical AQI Bar -->
+          <div class="flex flex-col items-center mx-4">
+            <div class="relative w-8 h-64 bg-gray-200 rounded-lg overflow-hidden">
+              <!-- AQI bar fill -->
+              <div id="aqi-bar" class="absolute bottom-0 w-full ${color} ${aqiBarHeightClass}"></div>
+            </div>
+          </div>
+          
+          <!-- AQI Conditions on the Right -->
+          <div class="flex flex-col justify-between h-64 mr-4 text-right text-sm space-y-0.5">
+            <span>Hazardous</span>
+            <span>Very Unhealthy</span>
+            <span>Unhealthy</span>
+            <span>Unhealthy for Sensitive</span>
+            <span>Moderate</span>
+            <span>Good</span>
+          </div>
+        </div>
+      </div>
+    `;
+}
+
+
+
