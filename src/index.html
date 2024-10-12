@@ -29,18 +29,14 @@
                 </div>
             </div>
             <div class="flex justify-between items-center">
-                <div class="flex items-center">
-                    <img src="../assets/location-pin-svgrepo-com.svg" class="h-12 w-12 mr-2">
-                    <span id="city_name" class="text-white text-2xl font-semibold">
-                        <!-- city name -->
-                    </span>
+                <div id="city_name" class="flex items-center">
+                    <!-- city name -->
                 </div>
                 <div id="current_date" class="text-white text-xl">
                     <!-- local date -->
                 </div>
             </div>
-            <div id="primary_current_data" class="flex p-10 justify-between items-center">
-                <!-- weather data svg icon -->
+            <div id="primary_current_data" class="flex p-2 justify-between items-center">
                 <div id="current_weather_data_text" class="text-white text-3xl font-semibold">
                     <div id="current_tempc" class="">
                         <!-- current temperature in celsius -->
@@ -50,14 +46,34 @@
                     </div>
                 </div>
             </div>
-            <div>
-                <!-- add hourly forecast here for the day -->
+            <div id="hourly_container" class="flex overflow-x-auto py-4 space-x-4">
+                <!-- Hourly forecast items -->
+                <!-- <div class="flex flex-col items-center bg-white rounded-lg p-2 shadow-md min-w-[100px] min-h-[120px]">
+                    <div>9am</div>
+                    <div><img src="../assets/weather/clouds.svg" class="h-12 w-12"></div>
+                    <div>30 °C</div>
+                </div>
+                <div class="flex flex-col items-center bg-white rounded-lg p-2 shadow-md min-w-[100px] min-h-[120px]">
+                    <div>10am</div>
+                    <div><img src="../assets/weather/clear.svg" class="h-12 w-12"></div>
+                    <div>32 °C</div>
+                </div>
+                <div class="flex flex-col items-center bg-white rounded-lg p-2 shadow-md min-w-[100px] min-h-[120px]">
+                    <div>11am</div>
+                    <div><img src="../assets/weather/rain.svg" class="h-12 w-12"></div>
+                    <div>28 °C</div>
+                </div>
+                <div class="flex flex-col items-center bg-white rounded-lg p-2 shadow-md min-w-[20%] min-h-[16]">
+                    <div>9am</div>
+                    <div><img src="../assets/weather/clouds.svg" class="h-12 w-12"></div>
+                    <div>30 °C</div>
+                </div> -->
+                
+                <!-- Add more hourly forecast items as needed -->
             </div>
         </div>
-        <!-- add a line between the major sections to show seperation here -->
-        <div class="w-[30vw]">
-            
-        </div>
+        <!-- add a line between the major sections to show separation here -->
+        <div class="w-[30vw]"></div>
     </div>
 </body>
 </html>

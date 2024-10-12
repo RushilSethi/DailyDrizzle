@@ -38,10 +38,15 @@ function displayWeather(city, currentData, forecastData){
 
 
     const cityName = document.getElementById("city_name");
-    cityName.innerText = `${currentData.location.name}, ${currentData.location.country}`;
+    cityName.innerHTML = `<img src="../assets/location-pin-svgrepo-com.svg" class="h-12 w-12 mr-2">
+                          <span class="text-white text-2xl font-semibold">
+                              ${currentData.location.name}, ${currentData.location.country}
+                          </span>`
 
     const localDate = document.getElementById("current_date");
     localDate.innerText = formatDate(currentData.location.localtime);
+
+    const currentConditionParent = document.getElementById("primary_current_data");
 
     const currentTemp = document.getElementById("current_tempc");
     currentTemp.innerText = `${currentData.current.temp_c} °C`;
@@ -49,17 +54,38 @@ function displayWeather(city, currentData, forecastData){
     const currentCondition = document.getElementById("current_condition");
     currentCondition.innerText = currentData.current.condition.text;
 
-    const currentConditionParent = document.getElementById("primary_current_data");
     const currentWeatherDataText = document.getElementById("current_weather_data_text")
     const conditionCode = currentData.current.condition.code; 
 
-    const weatherIcon = document.createElement("span");
+    let weatherIcon = document.getElementById("weather-icon");
+
+    if (!weatherIcon) {
+        weatherIcon = document.createElement("span");
+        weatherIcon.id = "weather-icon";
+        currentConditionParent.insertBefore(weatherIcon, currentWeatherDataText);
+    }
     weatherIcon.innerHTML = getWeatherSVG(conditionCode);
-    currentConditionParent.insertBefore(weatherIcon, currentWeatherDataText);
+
+    console.log(forecastData.forecast)
+
+    const forecastHourly = forecastData.forecast.forecastday[0];
+    const hourlyContainer = document.getElementById("hourly_container")
+    forecastHourly.hour.forEach((hourlyData)=>{
+        const time = get12HourTime(hourlyData.time);
+        const tempC = hourlyData.temp_c;
+        const conditionCode = hourlyData.condition.code;
+
+        const hourItem = document.createElement("div");
+        hourItem.classList.add("flex","flex-col","items-center","bg-white","rounded-lg","p-2","shadow-md","min-w-[20%]","min-h-[8]");
+        const hourCondition = getWeatherSVG(conditionCode);
+        hourItem.innerHTML = `<div>${time}</div>
+                              <div>${hourCondition}</div>
+                              <div>${tempC}</div>`
+
+        hourlyContainer.appendChild(hourItem);
+    });
     
 }
-
-
 
 //HELPER FUNCTIONS
 
@@ -97,7 +123,7 @@ const weatherSVGs = {
     rain: '<img src="../assets/weather/rain.svg" class="h-40 w-40"/>',
     thunderstorm: '<img src="../assets/weather/thunderstorm.svg" class="h-40 w-40"/>',
     snow: '<img src="../assets/weather/snow.svg" class="h-40 w-40"/>',
-    atmosphere: '<img src="../assets/weather/atmosphere.svg" class="h-40 w-50"/>'
+    atmosphere: '<img src="../assets/weather/atmosphere.svg" class="h-40 w-40"/>'
 };
 
 function getWeatherSVG(conditionCode) {
@@ -140,3 +166,12 @@ function getWeatherSVG(conditionCode) {
     return '<img src="../assets/weather/error-cloud.svg" class="h-36 w-36"></img>';
 }
 
+//convert 24hour time to 12 hour time
+function get12HourTime(time) {
+    let hour = parseInt(time.substring(11, 13));
+    let period = hour >= 12 ? 'pm' : 'am';
+    
+    hour = hour % 12 || 12; //handles cases for hour=0 or 12, REMEMBER THIS
+    
+    return `${hour}${period}`;
+}
