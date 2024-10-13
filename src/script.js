@@ -1,3 +1,7 @@
+window.onload = function() {
+    populateRecentCities();
+};
+
 const locationInput = document.getElementById("location_input");
 const locationSearch = document.getElementById("location_search");
 const currentLocationBtn = document.getElementById("current_location_btn");
@@ -7,9 +11,37 @@ const apiKey = "e411b3ac9894468fa69120046241010";
 locationSearch.addEventListener("click", function () {
     const locationVal = locationInput.value;
     if (validateInput(locationVal)) {
+        addCityToStorage(locationVal.trim());
+        populateRecentCities();
         fetchWeather(locationVal.trim());
     }
 });
+
+currentLocationBtn.addEventListener("click",async function(){
+    navigator.geolocation.getCurrentPosition(gotLocation, failedToGet);
+});
+
+function gotLocation(position){
+    console.log(position);
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    const currentData = fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}&aqi=yes`).then(response => response.json());
+    const forecastData = fetch(`http://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${latitude},${longitude}&days=3&aqi=yes`).then(response => response.json());
+
+
+    Promise.all([currentData, forecastData])
+        .then(([currentData, forecastData]) => {
+            displayWeather(currentData, forecastData);
+        }).catch(error => {
+            console.error('Error fetching weather data:', error);
+            // Implement function showError(); that displays error in a good UI under the search bar 
+            showError(`Error fetching weather data`,"error");
+        });
+}
+
+function failedToGet(){
+    showError("Error getting current position","error")
+}
 
 function fetchWeather(city) {
     const currentData = fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=yes`).then(response => response.json());
@@ -17,10 +49,11 @@ function fetchWeather(city) {
 
     Promise.all([currentData, forecastData])
         .then(([currentData, forecastData]) => {
-            displayWeather(city, currentData, forecastData);
+            displayWeather(currentData, forecastData);
         }).catch(error => {
             console.error('Error fetching weather data:', error);
             // Implement function showError(); that displays error in a good UI under the search bar 
+            showError(`Error fetching weather data: ${error}`,"error");
         });
 }
 
@@ -33,8 +66,11 @@ function validateInput(locationVal) {
     return true;
 }
 
-function displayWeather(city, currentData, forecastData) {
+function displayWeather(currentData, forecastData) {
     console.log(currentData);
+
+    const errorContainer = document.getElementById("error-container");
+    errorContainer.innerHTML = ''; 
 
     const cityName = document.getElementById("city_name");
     cityName.innerHTML = `<img src="../assets/location-pin-svgrepo-com.svg" class="h-12 w-12 mr-2">
@@ -96,19 +132,19 @@ function displayWeather(city, currentData, forecastData) {
     humidityWindspeed.innerHTML = `<div class="flex">
                     <img src="../assets/humidity-svgrepo-com.svg" class="h-14 w-14 mr-2">
                     <div class="text-white">
-                        <div>Humidity(in %)</div>
-                        <div>${currentData.current.humidity}</div>
+                        <div>Humidity</div>
+                        <div>${currentData.current.humidity}%</div>
                     </div>
                 </div>
                 <div class="flex">
                     <img src="../assets/wind-svgrepo-com.svg" class="h-14 w-14 mr-2">
                     <div class="text-white">
-                        <div>Wind Speed(in km/hr)</div>
-                        <div>${currentData.current.wind_kph}</div>
+                        <div>Wind Speed(in kmph)</div>
+                        <div>${currentData.current.wind_kph} km/hr</div>
                     </div>
                 </div>`;  
     
-    updateAQIDisplay(currentData.current.air_quality);
+    updateAQIDisplayUsingEPA(currentData.current.air_quality);
 
     const forecastContainer = document.getElementById("forecast_container");
     forecastContainer.innerHTML = '';
@@ -136,6 +172,67 @@ function displayWeather(city, currentData, forecastData) {
 }
 
 // HELPER FUNCTIONS
+
+//function that adds a city to recents in local storage(stores upto 5 most recent searches)
+function addCityToStorage(city) {
+    let recentCities = JSON.parse(localStorage.getItem('recentCities')) || [];
+
+    if (!recentCities.includes(city)) {
+        if (recentCities.length >= 5)
+            recentCities.shift();
+
+        recentCities.push(city);
+        localStorage.setItem('recentCities', JSON.stringify(recentCities));
+        console.log("Adding city:", city);
+    }
+}
+function populateRecentCities() {
+    const recentCities = JSON.parse(localStorage.getItem('recentCities')) || [];
+    console.log("populated current cities:", recentCities);
+    const recentsList = document.getElementById('recents');
+    const locationInput = document.getElementById("location_input");
+  
+    recentsList.innerHTML = '';
+
+    if (recentCities.length > 0) {
+        recentCities.forEach(city => {
+            console.log(city);
+            const listItem = document.createElement('option');
+            listItem.value = city;
+
+            listItem.addEventListener('click', function() {
+                locationInput.value = city;
+            });
+            recentsList.appendChild(listItem);
+        });
+    }
+}
+
+// Function to show an error message or a placeholder message based on the keyword
+function showError(statement, keyword) {
+    const errorContainer = document.getElementById("error-container"); 
+    let output = '';
+
+    if (keyword === 'error') {
+        output = `
+            <div class="flex flex-col items-center justify-center">
+                <img src="path_to_error_image.png" alt="Error" class="w-24 h-24 mb-4" />
+                <p class="text-red-500 text-lg font-bold">${statement}</p>
+            </div>
+        `;
+    } else if (keyword === 'placeholder') {
+        output = `
+            <div class="flex flex-col items-center justify-center">
+                <img src="path_to_error_image.png" alt="Error" class="w-24 h-24 mb-4" />
+                <p class="text-gray-500 text-lg">${statement}</p>
+            </div>
+        `;
+    } else {
+        console.error('Invalid keyword provided. Use either "error" or "placeholder".');
+    }
+    errorContainer.innerHTML = output;
+}
+
 
 // Function to format date into usable format
 function formatDate(input) {
@@ -278,106 +375,95 @@ function getPersonalizedWeatherMessage(conditionCode, tempC) {
     return message;
 }
 
-//function to calculate AQI from the air quality data
-function calculateAQI(data) {
-    const pollutants = [
-      { name: 'co', breakpoints: [0, 9, 12, 15.5, 34, 54, 85, 126, 200] },
-      { name: 'no2', breakpoints: [0, 3, 6, 9, 12, 15, 18, 21, 36] },
-      { name: 'o3', breakpoints: [0, 53, 70, 101, 126, 157, 188, 236, 375] },
-      { name: 'so2', breakpoints: [0, 35, 75, 115, 155, 185, 215, 265, 425] },
-      { name: 'pm2_5', breakpoints: [0, 12.1, 35.5, 55.4, 154.9, 254.1, 350.5, 446.9, 604.3] },
-      { name: 'pm10', breakpoints: [0, 54.9, 125.5, 154.9, 234.1, 354.5, 424.9, 504.3, 604.3] }
-    ];
-  
-    let maxAQI = 0;
-  
-    for (const pollutant of pollutants) {
-      const concentration = data[pollutant.name];
-      let aqi = 0;
-  
-      for (let i = 0; i < pollutant.breakpoints.length; i++) {
-        if (concentration <= pollutant.breakpoints[i]) {
-          aqi = Math.round(i * 50);
-          break;
-        }
-      }
-  
-      maxAQI = Math.max(maxAQI, aqi);
-    }
-  
-    return maxAQI;
-  }
 
-
-//function to update and display AQI
-function updateAQIDisplay(data) {
-    const aqi = calculateAQI(data);
-
+//AQI display without computation using only the US EPA Index data
+function getAQIFromEPAIndex(epaIndex) {
+    let aqi = 0;
     let status = '';
     let color = '';
     let emoji = '';
-    let message = ''; 
+    let message = '';
     let aqiBarHeightClass = '';
 
-    if (aqi <= 50) {
-        status = 'Good';
-        color = 'bg-green-500';
-        emoji = '🌱';
-        message = 'Enjoy the fresh air!';
-        aqiBarHeightClass = 'h-1/6'; // Assign 1/6th of the height
-    } else if (aqi <= 100) {
-        status = 'Moderate';
-        color = 'bg-yellow-500';
-        emoji = '🙂';
-        message = 'Air quality is acceptable.';
-        aqiBarHeightClass = 'h-1/4'; // Assign 1/4th of the height
-    } else if (aqi <= 150) {
-        status = 'Unhealthy for Sensitive';
-        color = 'bg-orange-500';
-        emoji = '😷';
-        message = 'Sensitive groups should limit outdoor activities.';
-        aqiBarHeightClass = 'h-1/3'; // Assign 1/3rd of the height
-    } else if (aqi <= 200) {
-        status = 'Unhealthy';
-        color = 'bg-red-500';
-        emoji = '😨';
-        message = 'Everyone should reduce prolonged outdoor exertion.';
-        aqiBarHeightClass = 'h-1/2'; // Assign half of the height
-    } else if (aqi <= 300) {
-        status = 'Very Unhealthy';
-        color = 'bg-purple-500';
-        emoji = '😵';
-        message = 'Health alert: Avoid outdoor activities!';
-        aqiBarHeightClass = 'h-2/3'; // Assign 2/3rd of the height
-    } else {
-        status = 'Hazardous';
-        color = 'bg-black';
-        emoji = '⚠️';
-        message = 'Emergency conditions: Stay indoors!';
-        aqiBarHeightClass = 'h-full'; // Assign full height
+    switch (epaIndex) {
+        case 1: // Good
+            aqi = 50;
+            status = 'Good';
+            color = 'bg-green-500';
+            emoji = '🌱';
+            message = 'Enjoy the fresh air!';
+            aqiBarHeightClass = 'h-1/6';
+            break;
+        case 2: // Moderate
+            aqi = 100;
+            status = 'Moderate';
+            color = 'bg-yellow-500';
+            emoji = '🙂';
+            message = 'Air quality is acceptable.';
+            aqiBarHeightClass = 'h-1/4';
+            break;
+        case 3: // Unhealthy for Sensitive
+            aqi = 150;
+            status = 'Unhealthy for Sensitive Groups';
+            color = 'bg-orange-500';
+            emoji = '😷';
+            message = 'Sensitive groups should limit outdoor activities.';
+            aqiBarHeightClass = 'h-1/3';
+            break;
+        case 4: // Unhealthy
+            aqi = 200;
+            status = 'Unhealthy';
+            color = 'bg-red-500';
+            emoji = '😨';
+            message = 'Everyone should reduce prolonged outdoor exertion.';
+            aqiBarHeightClass = 'h-1/2';
+            break;
+        case 5: // Very Unhealthy
+            aqi = 300;
+            status = 'Very Unhealthy';
+            color = 'bg-purple-500';
+            emoji = '😵';
+            message = 'Health alert: Avoid outdoor activities!';
+            aqiBarHeightClass = 'h-2/3';
+            break;
+        case 6: // Hazardous
+            aqi = 500;
+            status = 'Hazardous';
+            color = 'bg-black';
+            emoji = '⚠️';
+            message = 'Emergency conditions: Stay indoors!';
+            aqiBarHeightClass = 'h-full';
+            break;
+        default:
+            status = 'Unknown';
+            color = 'bg-gray-500';
+            emoji = '❓';
+            message = 'AQI data is unavailable.';
+            aqiBarHeightClass = 'h-0';
     }
 
-    // Dynamically updating the entire AQI container
+    return { aqi, status, color, emoji, message, aqiBarHeightClass };
+}
+
+// Update AQI display using EPA index
+function updateAQIDisplayUsingEPA(data) {
+    const epaIndex = data["us-epa-index"];
+    const aqiData = getAQIFromEPAIndex(epaIndex);
+
     const aqiContainer = document.getElementById("aqi_container");
     aqiContainer.innerHTML = `
       <div class="container mx-auto p-4 text-white">
         <div class="flex justify-center items-center">
-          <!-- AQI Value and Message on the Left -->
           <div class="flex flex-col items-center ml-4 text-sm">
-            <h2 class="text-2xl font-bold mb-2">Air Quality Index</h2> <!-- Increased font size -->
-            <span id="aqi-value" class="text-xl font-bold">${aqi}</span> <!-- Increased font size -->
-            <span id="aqi-message" class="block text-lg">${status}: ${message} ${emoji}</span> <!-- Increased font size -->
+            <h2 class="text-2xl font-bold mb-2">Air Quality Index</h2>
+            <span id="aqi-value" class="text-xl font-bold">${aqiData.aqi}</span>
+            <span id="aqi-message" class="block text-lg">${aqiData.status}: ${aqiData.message} ${aqiData.emoji}</span>
           </div>
-
-          <!-- Vertical AQI Bar -->
-          <div class="flex flex-col items-center mx-4">
+          <div class="flex flex-col items-center mx-2">
             <div class="relative w-8 h-64 bg-gray-200 rounded-lg overflow-hidden">
-              <!-- AQI bar fill -->
-              <div id="aqi-bar" class="absolute bottom-0 w-full ${color} ${aqiBarHeightClass}"></div>
+              <div id="aqi-bar" class="absolute bottom-0 w-full ${aqiData.color} ${aqiData.aqiBarHeightClass}"></div>
             </div>
           </div>
-          
-          <!-- AQI Conditions on the Right -->
           <div class="flex flex-col justify-between h-64 mr-4 text-right text-sm space-y-0.5">
             <span>Hazardous</span>
             <span>Very Unhealthy</span>
@@ -390,6 +476,3 @@ function updateAQIDisplay(data) {
       </div>
     `;
 }
-
-
-

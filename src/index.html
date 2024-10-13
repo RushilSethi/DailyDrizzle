@@ -17,17 +17,19 @@
             <div class="flex justify-center mx-auto my-4 p-1 px-2">
                 <!-- Input with Search Icon inside -->
                 <div class="relative w-full max-w-md">
-                    <input type="text" id="location_input" placeholder="Search Location" 
+                    <input type="text" id="location_input" list="recents" placeholder="Search Location" 
                            class="text-xl p-2 pl-4 pr-10 rounded-full w-full">
+                    <datalist id="recents"></datalist>
                     <img src="../assets/search-svgrepo-com.svg" id="location_search"
                          class="absolute right-3 top-1/2 transform -translate-y-1/2 h-6 w-6">
+                    
                 </div>
-                
                 <!-- Current Location Button outside -->
                 <div id="current_location_btn" class="bg-white rounded-full mx-2 flex items-center justify-center h-10 w-10">
                     <img src="../assets/location-currrent-svgrepo-com.svg" title="Use Current Location" class="h-8 w-8">
                 </div>
             </div>
+            <div id="error-container" class=""></div>
             <div class="flex justify-between items-center">
                 <div id="city_name" class="flex items-center">
                     <!-- city name -->
@@ -53,7 +55,7 @@
                 <!-- Hourly forecast items -->
             </div>
         </div>
-        <!-- add a line between the major sections to show separation here -->
+        <!-- right section -->
         <div class="w-[30vw] p-4">
             <div id="aqi_container">
                 <!-- AQI data here -->
