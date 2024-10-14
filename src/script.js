@@ -1,3 +1,5 @@
+import API_KEY from "./api.js";
+
 window.onload = function() {
     populateRecentCities();
     showError("Search for a location", "placeholder");
@@ -7,7 +9,7 @@ const locationInput = document.getElementById("location_input");
 const locationSearch = document.getElementById("location_search");
 const currentLocationBtn = document.getElementById("current_location_btn");
 
-const apiKey = "e411b3ac9894468fa69120046241010";
+const apiKey = API_KEY;
 
 locationSearch.addEventListener("click", function () {
     const locationVal = locationInput.value;
@@ -228,10 +230,14 @@ function showError(statement, keyword) {
     if (keyword === 'error') {
         output = `
             <div class="flex flex-col items-center justify-center">
-                <img src="../assets/error_img.png" alt="Error" class="w-48 h-48 mb-4" />
-                <p class="text-red-500 text-2xl font-bold">${statement}</p>
+                <img src="../assets/error_img.png" alt="Error" class="w-48 h-48 mb-1" />
+                    <p class="text-xs text-gray-500 mb-4">
+                        Image by 
+                        <a href="https://www.freepik.com" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-400">Freepik</a>
+                    </p>        
+                    <p class="text-red-500 text-2xl font-bold">${statement}</p>
             </div>
-        `;
+        `;``
     } else if (keyword === 'placeholder') {
         output = `
             <div class="flex flex-col items-center justify-center">

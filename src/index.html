@@ -4,15 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./output.css" />
-    <script src="./script.js" defer></script>
-    <title>Weather it'll rain</title>
+    <script type="module" src="./script.js" defer></script>
+    <title>DailyDrizzle</title>
   </head>
   <body
     class="bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center min-h-screen"
   >
-    <div>
-      <!-- logo here in the left top corner of the page, in a triangle shape slightly like a bookmark -->
-    </div>
     <div
       class="bg-white/10 backdrop-blur-md flex flex-col lg:flex-row w-full h-full max-w-5xl md:items-center shadow-lg"
     >
@@ -95,6 +92,9 @@
           <!-- 3 day forecast items -->
         </div>
       </div>
+    </div>
+    <div class="fixed bottom-2 right-2 bg-blue-500 text-white text-xs md:text-s px-2 py-1 rounded-full">
+        DailyDrizzle
     </div>
   </body>
 </html>
