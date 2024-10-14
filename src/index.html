@@ -1,71 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./output.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./output.css" />
     <script src="./script.js" defer></script>
     <title>Weather it'll rain</title>
-</head>
-<body class="bg-zinc-700 flex items-center justify-center min-h-screen">
+  </head>
+  <body
+    class="bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center min-h-screen"
+  >
     <div>
-        <!-- logo here in the left top corner of the page, in a triangle shape slightly like a bookmark -->
+      <!-- logo here in the left top corner of the page, in a triangle shape slightly like a bookmark -->
     </div>
-    <div class="bg-blue-400 flex flex-col lg:flex-row w-full h-full max-w-5xl md:items-center">
-        <!-- left section -->
-        <div class="w-full lg:w-[30vw] md:w-[80%] flex-col p-4 flex-1">
-            <div class="flex justify-center mx-auto my-4 p-1 px-2">
-                <!-- Input with Search Icon inside -->
-                <div class="relative w-full max-w-md">
-                    <input type="text" id="location_input" list="recents" placeholder="Search Location" 
-                           class="text-xl p-2 pl-4 pr-10 rounded-full w-full">
-                    <datalist id="recents"></datalist>
-                    <img src="../assets/search-svgrepo-com.svg" id="location_search"
-                         class="absolute right-3 top-1/2 transform -translate-y-1/2 h-6 w-6">
-                </div>
-                <!-- Current Location Button outside -->
-                <div id="current_location_btn" class="bg-white rounded-full mx-2 flex items-center justify-center h-10 w-10">
-                    <img src="../assets/location-currrent-svgrepo-com.svg" title="Use Current Location" class="h-8 w-8">
-                </div>
-            </div>
-            <div id="error-container" class=""></div>
-            <div class="flex justify-between items-center">
-                <div id="city_name" class="flex items-center">
-                    <!-- city name -->
-                </div>
-                <div id="current_date" class="text-white text-xl">
-                    <!-- local date -->
-                </div>
-            </div>
-            <div id="primary_current_data" class="flex p-2 justify-between items-center">
-                <div id="current_weather_data_text" class="text-white text-3xl font-semibold">
-                    <div id="current_tempc" class="">
-                        <!-- current temperature in celsius -->
-                    </div>
-                    <div id="current_condition">
-                        <!-- current condition -->
-                    </div>
-                </div>
-            </div>
-            <div id="personalized_message_container" class="text-white">
-            </div>
-            <div id="hourly_container" class="flex overflow-x-auto py-4 space-x-4">
-                <!-- Hourly forecast items -->
-            </div>
+    <div
+      class="bg-white/10 backdrop-blur-md flex flex-col lg:flex-row w-full h-full max-w-5xl md:items-center shadow-lg"
+    >
+      <!-- left section -->
+      <div
+        class="w-full lg:w-[30vw] md:w-[80%] flex-col p-4 flex-1 text-slate-200"
+      >
+        <div class="flex justify-center items-center mx-auto my-4 p-1 px-2">
+          <!-- Input with Search Icon inside -->
+          <div class="relative w-full max-w-md">
+            <input
+              type="text"
+              id="location_input"
+              list="recents"
+              placeholder="Search Location"
+              class="text-xl p-2 pl-4 pr-10 rounded-full w-full bg-slate-600 hover:bg-slate-500 focus:bg-slate-400"
+            />
+            <datalist id="recents"></datalist>
+            <img
+              src="../assets/search-svgrepo-com.svg"
+              id="location_search"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 h-6 w-6"
+            />
+          </div>
+          <!-- Current Location Button outside -->
+          <div
+            id="current_location_btn"
+            class="bg-slate-600 rounded-full mx-2 flex items-center justify-center h-10 w-10 hover:bg-slate-500 focus:bg-slate-400"
+          >
+            <img
+              src="../assets/location-currrent-svgrepo-com.svg"
+              title="Use Current Location"
+              class="h-8 w-8"
+            />
+          </div>
         </div>
-        <!-- right section -->
-        <div class="w-full md:w-[80%] p-4 flex-1">
-            <div id="aqi_container">
-                <!-- AQI data here -->
-            </div>
-            <!-- Updated humidity and windspeed container -->
-            <div id="humidity_windspeed" class="flex flex-col md:flex-row justify-between text-lg mt-4">
-                <!-- humidity and windspeed data will be in column layout on small screens, row layout on medium+ -->
-            </div>
-            <div id="forecast_container" class="flex space-x-4 mt-4">
-                <!-- 3 day forecast items -->
-            </div>
+        <div id="error-container" class=""></div>
+        <div class="flex justify-between items-center">
+          <div id="city_name" class="flex items-center text-slate-200">
+            <!-- city name -->
+          </div>
+          <div id="current_date" class="text-slate-300 text-xl">
+            <!-- local date -->
+          </div>
         </div>
+        <div
+          id="primary_current_data"
+          class="flex p-2 justify-between items-center"
+        >
+          <div
+            id="current_weather_data_text"
+            class="text-slate-200 text-3xl font-semibold"
+          >
+            <div id="current_tempc" class="">
+              <!-- current temperature in celsius -->
+            </div>
+            <div id="current_condition">
+              <!-- current condition -->
+            </div>
+          </div>
+        </div>
+        <div id="personalized_message_container" class="text-slate-200"></div>
+        <div id="hourly_container" class="flex overflow-x-auto py-4 space-x-4">
+          <!-- Hourly forecast items -->
+        </div>
+      </div>
+      <!-- right section -->
+      <div class="w-full md:w-[80%] p-4 flex-1 text-slate-200">
+        <div id="aqi_container">
+          <!-- AQI data here -->
+        </div>
+        <!-- Updated humidity and windspeed container -->
+        <div
+          id="humidity_windspeed"
+          class="flex flex-col md:flex-row justify-between text-lg mt-4"
+        >
+          <!-- humidity and windspeed data will be in column layout on small screens, row layout on medium+ -->
+        </div>
+        <div id="forecast_container" class="flex space-x-4 mt-4">
+          <!-- 3 day forecast items -->
+        </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>

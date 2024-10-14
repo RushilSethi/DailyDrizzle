@@ -1,5 +1,6 @@
 window.onload = function() {
     populateRecentCities();
+    showError("Search for a location", "placeholder");
 };
 
 const locationInput = document.getElementById("location_input");
@@ -116,7 +117,12 @@ function displayWeather(currentData, forecastData) {
         const conditionCode = hourlyData.condition.code;
 
         const hourItem = document.createElement("div");
-        hourItem.classList.add("flex", "flex-col", "items-center", "bg-white", "rounded-lg", "px-4", "p-2", "shadow-md", "min-w-[20%]", "min-h-[8]");
+        hourItem.classList.add(
+            "flex", "flex-col", "items-center", 
+            "bg-white/10", "backdrop-blur-md", "rounded-lg", 
+            "px-4", "p-2", "shadow-lg", 
+            "min-w-[25%]", "md:min-w-[20%]", "min-h-8", "text-slate-200", 
+        );
         
         const hourConditionSVG = getWeatherSVGPath(conditionCode);
         hourItem.innerHTML = `
@@ -158,8 +164,13 @@ function displayWeather(currentData, forecastData) {
 
         // Create a tile for each day's forecast
         const dayTile = document.createElement("div");
-        dayTile.classList.add("flex", "flex-col", "items-center", "bg-white", "rounded-lg", "shadow-md", "p-2", "m-2", "w-full");
-
+        // dayTile.classList.add("flex", "flex-col", "items-center", "bg-white", "rounded-lg", "shadow-md", "p-2", "m-2", "w-full");
+        dayTile.classList.add(
+            "flex", "flex-col", "items-center", 
+            "bg-white/10", "backdrop-blur-lg", "rounded-lg", 
+            "shadow-lg", "p-2", "m-2", "w-full", 
+            "text-slate-200", "border", "border-white/20"
+        );
         // Add content to the tile
         dayTile.innerHTML = `
             <div class="text-lg font-semibold text-center">${date}</div>
@@ -217,15 +228,15 @@ function showError(statement, keyword) {
     if (keyword === 'error') {
         output = `
             <div class="flex flex-col items-center justify-center">
-                <img src="path_to_error_image.png" alt="Error" class="w-24 h-24 mb-4" />
-                <p class="text-red-500 text-lg font-bold">${statement}</p>
+                <img src="../assets/error_img.png" alt="Error" class="w-48 h-48 mb-4" />
+                <p class="text-red-500 text-2xl font-bold">${statement}</p>
             </div>
         `;
     } else if (keyword === 'placeholder') {
         output = `
             <div class="flex flex-col items-center justify-center">
-                <img src="path_to_error_image.png" alt="Error" class="w-24 h-24 mb-4" />
-                <p class="text-gray-500 text-lg">${statement}</p>
+                <img src="../assets/weather/error-cloud.svg" alt="Error" class="w-48 h-48 mb-4" />
+                <p class="text-white text-2xl">${statement}</p>
             </div>
         `;
     } else {
@@ -347,7 +358,7 @@ function getPersonalizedWeatherMessage(conditionCode, tempC) {
         else if (tempC > warmThreshold) message = "Cloudy but comfortable; perfect for a cozy day with a book and your favorite drink! 📖☕";
         else if (tempC > coolThreshold) message = "Overcast skies today; take an umbrella just in case the drizzle hits! ☔";
         else message = "Cool and cloudy; stay warm, maybe enjoy some soup while watching the weather change! 🍲";
-    } else if ([1180, 1183, 1186, 1189, 1192, 1195, 1240, 1243, 1246].includes(conditionCode)) {
+    } else if ([1063, 1150, 1153, 1168, 1171, 1180, 1183, 1186, 1189, 1192, 1195, 1240, 1243, 1246].includes(conditionCode)) {
         // Drizzle/Rain
         if (tempC > hotThreshold) message = "A warm drizzle is refreshing! 🌦️ Don’t forget your raincoat and enjoy the unique weather! ☔";
         else if (tempC > warmThreshold) message = "Light rain outside; grab your umbrella and take a moment to enjoy the soothing sound of raindrops. 🎶";
@@ -365,7 +376,7 @@ function getPersonalizedWeatherMessage(conditionCode, tempC) {
         else if (tempC > warmThreshold) message = "Light snowflakes are falling; perfect for hot chocolate indoors! ☕ Enjoy the view from your window! 🌨️";
         else if (tempC > coolThreshold) message = "Snowy and chilly; bundle up for some fun outside! ⛄ Don't forget your gloves and scarf! 🧤🧣";
         else message = "A winter wonderland! 🌨️ Perfect for building snowmen or cozying up by the fire with a warm drink! 🔥";
-    } else if ([1135, 1147].includes(conditionCode)) {
+    } else if ([1030, 1135, 1147].includes(conditionCode)) {
         // Fog
         if (tempC > hotThreshold) message = "A warm fog surrounds us; drive safely and enjoy the mysterious atmosphere! 🌫️🚗";
         else if (tempC > warmThreshold) message = "Misty mornings can be beautiful; take your time outdoors and enjoy the serene vibes! 🌄";
