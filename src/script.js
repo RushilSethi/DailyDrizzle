@@ -23,6 +23,7 @@ currentLocationBtn.addEventListener("click",async function(){
 
 function gotLocation(position){
     console.log(position);
+    locationInput.value = '';
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
     const currentData = fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}&aqi=yes`).then(response => response.json());
@@ -130,14 +131,14 @@ function displayWeather(currentData, forecastData) {
 
     const humidityWindspeed = document.getElementById("humidity_windspeed");
     humidityWindspeed.innerHTML = `<div class="flex">
-                    <img src="../assets/humidity-svgrepo-com.svg" class="h-14 w-14 mr-2">
+                    <img src="../assets/humidity-svgrepo-com.svg" class="h-14 w-14 mr-2 mb-2">
                     <div class="text-white">
                         <div>Humidity</div>
                         <div>${currentData.current.humidity}%</div>
                     </div>
                 </div>
                 <div class="flex">
-                    <img src="../assets/wind-svgrepo-com.svg" class="h-14 w-14 mr-2">
+                    <img src="../assets/wind-svgrepo-com.svg" class="h-14 w-14 mr-2 mb-2">
                     <div class="text-white">
                         <div>Wind Speed(in kmph)</div>
                         <div>${currentData.current.wind_kph} km/hr</div>

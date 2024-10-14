@@ -7,13 +7,13 @@
     <script src="./script.js" defer></script>
     <title>Weather it'll rain</title>
 </head>
-<body class="bg-zinc-700 flex items-center justify-center h-screen">
+<body class="bg-zinc-700 flex items-center justify-center min-h-screen">
     <div>
         <!-- logo here in the left top corner of the page, in a triangle shape slightly like a bookmark -->
     </div>
-    <div class="bg-blue-400 flex h-[80vh]">
+    <div class="bg-blue-400 flex flex-col lg:flex-row w-full h-full md:h-[80vh] max-w-5xl">
         <!-- left section -->
-        <div class="w-[30vw] flex-col p-4">
+        <div class="w-full lg:w-[30vw] md:w-[50%] flex-col p-4">
             <div class="flex justify-center mx-auto my-4 p-1 px-2">
                 <!-- Input with Search Icon inside -->
                 <div class="relative w-full max-w-md">
@@ -22,7 +22,6 @@
                     <datalist id="recents"></datalist>
                     <img src="../assets/search-svgrepo-com.svg" id="location_search"
                          class="absolute right-3 top-1/2 transform -translate-y-1/2 h-6 w-6">
-                    
                 </div>
                 <!-- Current Location Button outside -->
                 <div id="current_location_btn" class="bg-white rounded-full mx-2 flex items-center justify-center h-10 w-10">
@@ -49,22 +48,22 @@
                 </div>
             </div>
             <div id="personalized_message_container" class="text-white">
-
             </div>
             <div id="hourly_container" class="flex overflow-x-auto py-4 space-x-4">
                 <!-- Hourly forecast items -->
             </div>
         </div>
         <!-- right section -->
-        <div class="w-[30vw] p-4">
+        <div class="w-full md:w-[60%] p-4">
             <div id="aqi_container">
                 <!-- AQI data here -->
             </div>
-            <div id="humidity_windspeed" class="flex justify-between text-lg mt-4">
-                <!-- humidity and windspeed data -->
+            <!-- Updated humidity and windspeed container -->
+            <div id="humidity_windspeed" class="flex flex-col md:flex-row justify-between text-lg mt-4">
+                <!-- humidity and windspeed data will be in column layout on small screens, row layout on medium+ -->
             </div>
             <div id="forecast_container" class="flex space-x-4 mt-4">
-                <!-- 3 day forecast items  -->
+                <!-- 3 day forecast items -->
             </div>
         </div>
     </div>
