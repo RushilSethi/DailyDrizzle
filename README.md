@@ -2,6 +2,8 @@
 
 A web-based weather application that provides real-time weather information and forecasts for any location, featuring a sleek UI and responsive design.
 
+Live Demo: https://daily-drizzle.netlify.app/
+
 ## Features
 
 - **Dynamic Weather Search**: Search for current weather by location.
