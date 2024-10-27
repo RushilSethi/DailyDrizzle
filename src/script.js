@@ -237,7 +237,7 @@ function showError(statement, keyword) {
                     </p>        
                     <p class="text-red-500 text-2xl font-bold">${statement}</p>
             </div>
-        `;``
+        `;
     } else if (keyword === 'placeholder') {
         output = `
             <div class="flex flex-col items-center justify-center">

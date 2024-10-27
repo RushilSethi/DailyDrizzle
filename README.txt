@@ -1,0 +1,1 @@
+To run the project, open vs code in this directory ie the root of the project, then run npm run dev and finally open the index.html file using live server.
