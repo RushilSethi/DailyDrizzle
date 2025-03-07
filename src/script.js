@@ -29,8 +29,8 @@ function gotLocation(position){
     locationInput.value = '';
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
-    const currentData = fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}&aqi=yes`).then(response => response.json());
-    const forecastData = fetch(`http://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${latitude},${longitude}&days=3&aqi=yes`).then(response => response.json());
+    const currentData = fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}&aqi=yes`).then(response => response.json());
+    const forecastData = fetch(`https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${latitude},${longitude}&days=3&aqi=yes`).then(response => response.json());
 
 
     Promise.all([currentData, forecastData])
@@ -48,8 +48,8 @@ function failedToGet(){
 }
 
 function fetchWeather(city) {
-    const currentData = fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=yes`).then(response => response.json());
-    const forecastData = fetch(`http://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=3&aqi=yes`).then(response => response.json());
+    const currentData = fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=yes`).then(response => response.json());
+    const forecastData = fetch(`https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=3&aqi=yes`).then(response => response.json());
 
     Promise.all([currentData, forecastData])
         .then(([currentData, forecastData]) => {
